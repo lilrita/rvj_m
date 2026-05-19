@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>RVJ | GAMER MESSENGER</title>
+    <title>RVJ | REAL-TIME GAMER MESSENGER</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: 'Courier New', 'Fira Code', 'Segoe UI', monospace;
+            font-family: 'Courier New', 'Fira Code', monospace;
             background: radial-gradient(circle at 20% 30%, #0a0f1e, #03050a);
             height: 100vh;
             display: flex;
@@ -23,19 +23,12 @@
             overflow: hidden;
         }
 
-        /* Анимированный геймерский фон */
         body::before {
             content: '';
             position: absolute;
             width: 200%;
             height: 200%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 255, 255, 0.03) 2px,
-                rgba(0, 255, 255, 0.03) 4px
-            );
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,255,0.03) 2px, rgba(0,255,255,0.03) 4px);
             animation: scan 8s linear infinite;
             pointer-events: none;
         }
@@ -45,30 +38,115 @@
             100% { transform: translateY(0%); }
         }
 
-        /* Основной контейнер RVJ */
+        /* Auth Modal */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .auth-box {
+            background: #0a0f1a;
+            border: 2px solid #0ff;
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            max-width: 90%;
+            box-shadow: 0 0 50px rgba(0,255,255,0.3);
+        }
+
+        .auth-box h2 {
+            color: #0ff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            letter-spacing: 3px;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #010101;
+            border: 1px solid #ff00ff;
+            color: #0ff;
+            font-family: monospace;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .auth-input:focus {
+            border-color: #0ff;
+            box-shadow: 0 0 10px #0ff;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #ff00ff33, #00ffff33);
+            border: 1px solid #ff00ff;
+            color: #0ff;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        .auth-btn:hover {
+            background: #ff00ff66;
+            box-shadow: 0 0 15px #ff00ff;
+        }
+
+        .switch-auth {
+            text-align: center;
+            margin-top: 15px;
+            color: #88aaff;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .switch-auth:hover {
+            color: #0ff;
+            text-decoration: underline;
+        }
+
+        /* Main Messenger */
         .rvj-messenger {
             width: 1300px;
             max-width: 95vw;
             height: 88vh;
-            background: rgba(8, 12, 20, 0.95);
+            background: rgba(8,12,20,0.95);
             backdrop-filter: blur(8px);
             border-radius: 16px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 10px rgba(255, 0, 255, 0.2);
+            border: 1px solid rgba(0,255,255,0.3);
+            box-shadow: 0 0 30px rgba(0,255,255,0.2);
             display: flex;
             overflow: hidden;
-            position: relative;
-            font-family: 'Courier New', monospace;
+            display: none;
         }
 
-        /* Боковая панель — геймер-контакты */
         .gamer-sidebar {
             width: 32%;
-            background: rgba(5, 8, 15, 0.9);
+            background: rgba(5,8,15,0.9);
             border-right: 2px solid #00ffff33;
             display: flex;
             flex-direction: column;
-            backdrop-filter: blur(4px);
         }
 
         .gamer-header {
@@ -76,20 +154,8 @@
             background: linear-gradient(135deg, #0a0f1f, #010101);
             border-bottom: 2px solid #ff00ff;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 12px;
-            position: relative;
-        }
-
-        .gamer-header::after {
-            content: '◢◤◢◤';
-            position: absolute;
-            right: 15px;
-            top: 10px;
-            font-size: 10px;
-            color: #0ff;
-            opacity: 0.6;
-            letter-spacing: 2px;
         }
 
         .rvj-logo {
@@ -99,17 +165,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 10px rgba(0,255,255,0.5);
-            letter-spacing: 3px;
-        }
-
-        .gamer-badge {
-            font-size: 12px;
-            color: #0ff;
-            border: 1px solid #0ff;
-            padding: 2px 8px;
-            border-radius: 20px;
-            background: #0ff11a;
         }
 
         .player-stats {
@@ -135,12 +190,6 @@
             color: #0ff;
             font-family: monospace;
             outline: none;
-            transition: all 0.3s;
-        }
-
-        .search-gamer input:focus {
-            border-color: #0ff;
-            box-shadow: 0 0 8px #0ff;
         }
 
         .contacts-gamer {
@@ -156,7 +205,6 @@
             cursor: pointer;
             border-bottom: 1px solid #1f2a3e;
             transition: all 0.2s;
-            position: relative;
         }
 
         .gamer-contact:hover {
@@ -167,7 +215,6 @@
         .gamer-contact.active {
             background: linear-gradient(90deg, #ff00ff22, #0ff11a);
             border-left: 3px solid #ff00ff;
-            box-shadow: inset 0 0 10px #ff00ff33;
         }
 
         .gamer-avatar {
@@ -181,9 +228,6 @@
             font-weight: bold;
             font-size: 20px;
             color: #000;
-            text-shadow: 0 0 3px #fff;
-            transform: rotate(2deg);
-            box-shadow: 0 0 8px #0ff;
         }
 
         .gamer-info {
@@ -193,27 +237,23 @@
         .gamer-name {
             font-weight: bold;
             color: #0ff;
-            letter-spacing: 1px;
         }
 
         .gamer-status {
             font-size: 10px;
             color: #f0f;
-            font-family: monospace;
         }
 
-        .gamer-last-msg {
+        .add-friend-btn {
+            background: #ff00ff33;
+            border: 1px solid #0ff;
+            color: #0ff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
             font-size: 11px;
-            color: #88aaff;
-            margin-top: 4px;
         }
 
-        .msg-time {
-            font-size: 9px;
-            color: #6f8faa;
-        }
-
-        /* Чат область */
         .chat-gamer {
             flex: 1;
             display: flex;
@@ -226,35 +266,8 @@
             background: #0a0f1a;
             border-bottom: 2px solid #00ffff88;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-        }
-
-        .gamer-chat-title {
-            display: flex;
             align-items: center;
-            gap: 12px;
-        }
-
-        .gamer-chat-title .avatar-small {
-            width: 42px;
-            height: 42px;
-            background: #f0f;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .gamer-rank {
-            font-size: 11px;
-            color: #ffaa44;
-            background: #000000aa;
-            padding: 2px 8px;
-            border-radius: 12px;
-            border: 1px solid gold;
         }
 
         .messages-gamer {
@@ -264,8 +277,6 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            background-image: radial-gradient(circle at 10% 20%, #0a0f1a 1px, transparent 1px);
-            background-size: 20px 20px;
         }
 
         .message-gamer {
@@ -295,32 +306,18 @@
             font-size: 14px;
             font-family: monospace;
             word-wrap: break-word;
-            position: relative;
         }
 
         .received .bubble-gamer {
             background: #11161f;
             border: 1px solid #0ff88a;
             color: #bbffff;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px #00000055;
         }
 
         .sent .bubble-gamer {
             background: linear-gradient(135deg, #ff00cc33, #00ffff33);
             border: 1px solid #ff44ff;
             color: #ffffff;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 0 8px #ff00ff33;
-        }
-
-        .message-time-gamer {
-            font-size: 9px;
-            margin-top: 5px;
-            margin-left: 8px;
-            margin-right: 8px;
-            color: #77aaff;
-            font-family: monospace;
         }
 
         .input-gamer-area {
@@ -329,7 +326,6 @@
             border-top: 1px solid #ff00ff88;
             display: flex;
             gap: 12px;
-            align-items: center;
         }
 
         .input-gamer-area input {
@@ -340,12 +336,7 @@
             border-radius: 40px;
             color: #0ff;
             font-family: monospace;
-            font-size: 14px;
             outline: none;
-        }
-
-        .input-gamer-area input:focus {
-            box-shadow: 0 0 12px #0ff;
         }
 
         .gamer-btn {
@@ -354,185 +345,348 @@
             color: #f0f;
             padding: 10px 24px;
             border-radius: 30px;
-            font-weight: bold;
-            font-family: monospace;
             cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
         }
 
         .gamer-btn:hover {
             background: #ff00ff44;
             box-shadow: 0 0 15px #ff00ff;
-            color: white;
-            border-color: #0ff;
         }
 
-        /* скролл */
-        .messages-gamer::-webkit-scrollbar, .contacts-gamer::-webkit-scrollbar {
-            width: 5px;
-        }
-        .messages-gamer::-webkit-scrollbar-track {
-            background: #0a0f1a;
-        }
-        .messages-gamer::-webkit-scrollbar-thumb {
-            background: #f0f;
-            border-radius: 10px;
+        .logout-btn {
+            background: #ff000033;
+            border: 1px solid #ff0000;
+            padding: 5px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         @media (max-width: 700px) {
             .gamer-sidebar {
                 width: 40%;
             }
-            .message-gamer {
-                max-width: 90%;
-            }
         }
     </style>
 </head>
 <body>
-<div class="rvj-messenger">
+<div class="auth-overlay" id="authOverlay">
+    <div class="auth-box">
+        <h2>◢ RVJ ◣</h2>
+        <div id="authForm">
+            <input type="text" id="loginUsername" class="auth-input" placeholder="GAMER TAG">
+            <input type="password" id="loginPassword" class="auth-input" placeholder="PASSWORD">
+            <button class="auth-btn" onclick="login()">LOGIN</button>
+            <div class="switch-auth" onclick="showRegister()">NO ACCOUNT? REGISTER</div>
+        </div>
+    </div>
+</div>
+
+<div class="rvj-messenger" id="messengerApp">
     <div class="gamer-sidebar">
         <div class="gamer-header">
             <div class="rvj-logo">◢ RVJ ◣</div>
-            <div class="gamer-badge">GAMER v2.0</div>
+            <div class="logout-btn" onclick="logout()">🚪 EXIT</div>
         </div>
         <div class="player-stats">
-            <span>🎮 LVL: 99</span>
-            <span>🔥 K/D: 4.20</span>
-            <span>🏆 WIN STREAK</span>
+            <span id="currentUserDisplay">USER</span>
+            <span>🏆 LVL 99</span>
         </div>
         <div class="search-gamer">
-            <input type="text" id="gamerSearch" placeholder="🔍 FIND CLAN MEMBER...">
+            <input type="text" id="searchUsers" placeholder="🔍 FIND PLAYER...">
         </div>
-        <div class="contacts-gamer" id="gamerContactsList">
-            <!-- динамические контакты -->
+        <div class="contacts-gamer" id="contactsList">
+            <!-- Friends list -->
+        </div>
+        <div class="search-gamer" style="border-top:1px solid #ff00ff33;">
+            <input type="text" id="addFriendInput" placeholder="➕ ADD FRIEND BY TAG">
+            <button class="gamer-btn" style="width:100%; margin-top:8px;" onclick="sendFriendRequest()">SEND REQUEST</button>
         </div>
     </div>
 
     <div class="chat-gamer">
         <div class="chat-gamer-header">
-            <div class="gamer-chat-title" id="gamerChatTitle">
-                <div class="avatar-small" id="gamerChatAvatar">GH</div>
-                <div>
-                    <div style="font-weight:bold;color:#0ff;" id="gamerChatName">Ghost</div>
-                    <div class="gamer-rank" id="gamerRank">LEGENDARY ELITE</div>
-                </div>
+            <div id="chatUserInfo">
+                <div style="font-weight:bold;color:#0ff;" id="chatUserName">SELECT CHAT</div>
             </div>
-            <div class="gamer-badge">🎧 VOICE • CLAN WAR</div>
         </div>
-        <div class="messages-gamer" id="gamerMessagesContainer">
-            <!-- сообщения -->
+        <div class="messages-gamer" id="messagesContainer">
+            <div style="text-align:center;color:#88aaff;padding:40px;">⚔️ CHOOSE A FRIEND ⚔️</div>
         </div>
         <div class="input-gamer-area">
-            <input type="text" id="gamerMessageInput" placeholder="[ENTER] TYPE MESSAGE...">
-            <button class="gamer-btn" id="gamerSendBtn">➤ SEND</button>
+            <input type="text" id="messageInput" placeholder="[ENTER] TYPE MESSAGE...">
+            <button class="gamer-btn" id="sendBtn">➤ SEND</button>
         </div>
     </div>
 </div>
 
 <script>
-    // -------- ГЕЙМЕРСКИЕ КОНТАКТЫ (RVJ CREW) ----------
-    const gamers = [
-        { id: 1, name: "GHOST_RVJ", avatar: "GH", rank: "LEGENDARY ELITE", lastMsg: "GG WP! next raid?", time: "22:14", color: "#0ff", status: "online" },
-        { id: 2, name: "NEO_N1GHT", avatar: "NN", rank: "DIAMOND SNIPER", lastMsg: "lets destroy enemies", time: "21:56", color: "#ff44ff", status: "in game" },
-        { id: 3, name: "RAVEN_VORTEX", avatar: "RV", rank: "CYBER LORD", lastMsg: "clan meeting at 8pm", time: "20:30", color: "#ffaa44", status: "idle" },
-        { id: 4, name: "ZER0_SK1LL", avatar: "ZS", rank: "MASTER BLASTER", lastMsg: "need backup!", time: "19:12", color: "#44ffaa", status: "offline" },
-        { id: 5, name: "KILLA_BYTE", avatar: "KB", rank: "RAGE QUITTER", lastMsg: "new update pog", time: "17:45", color: "#ff6666", status: "online" }
-    ];
+    // Database structure
+    let users = JSON.parse(localStorage.getItem('rvj_users')) || [];
+    let currentUser = null;
+    let currentChatUserId = null;
+    let refreshInterval = null;
 
-    // Сообщения (геймер стиль)
-    let gamerMessagesDB = {
-        1: [ // Ghost
-            { text: "yo! готов к рейду?", type: "received", time: "22:14" },
-            { text: "всегда готов! 🔥 как обычно full loot?", type: "sent", time: "22:16" },
-            { text: "ага, бери гранаты и медик-кит", type: "received", time: "22:18" },
-            { text: "уже загрузился 🤘", type: "sent", time: "22:20" }
-        ],
-        2: [
-            { text: "видел новый скин? 🔫", type: "received", time: "21:56" },
-            { text: "да, выглядит эпично, купил себе", type: "sent", time: "21:59" }
-        ],
-        3: [
-            { text: "RVJ клан соберется в 20:00 по серверу", type: "received", time: "20:30" },
-            { text: "буду, готовьте дюки", type: "sent", time: "20:32" }
-        ],
-        4: [
-            { text: "нужен хил, враги со всех сторон!", type: "received", time: "19:12" },
-            { text: "лечу на помощь! 🚁", type: "sent", time: "19:15" }
-        ],
-        5: [
-            { text: "патч вышел, баланс сломал мету", type: "received", time: "17:45" },
-            { text: "ага, теперь дробовики имба", type: "sent", time: "17:50" }
-        ]
-    };
-
-    let currentGamerId = 1;
-    let currentGamerMessages = [...gamerMessagesDB[1]];
-
-    function renderGamerContacts() {
-        const container = document.getElementById('gamerContactsList');
-        const searchVal = document.getElementById('gamerSearch').value.toLowerCase();
-        const filtered = gamers.filter(g => g.name.toLowerCase().includes(searchVal));
-        container.innerHTML = '';
-        filtered.forEach(g => {
-            const div = document.createElement('div');
-            div.className = 'gamer-contact';
-            if (currentGamerId === g.id) div.classList.add('active');
-            div.innerHTML = `
-                <div class="gamer-avatar" style="background: linear-gradient(135deg, ${g.color}, #000); box-shadow:0 0 8px ${g.color};">${g.avatar}</div>
-                <div class="gamer-info">
-                    <div class="gamer-name">${g.name}</div>
-                    <div class="gamer-status">🏆 ${g.rank} • ${g.status}</div>
-                    <div class="gamer-last-msg">${g.lastMsg}</div>
-                </div>
-                <div class="msg-time">${g.time}</div>
-            `;
-            div.addEventListener('click', () => switchGamerChat(g.id));
-            container.appendChild(div);
-        });
+    function saveUsers() {
+        localStorage.setItem('rvj_users', JSON.stringify(users));
     }
 
-    function switchGamerChat(gamerId) {
-        currentGamerId = gamerId;
-        const gamer = gamers.find(g => g.id === gamerId);
-        if (gamer) {
-            document.getElementById('gamerChatName').innerText = gamer.name;
-            document.getElementById('gamerChatAvatar').innerText = gamer.avatar;
-            document.getElementById('gamerRank').innerText = gamer.rank;
-            document.getElementById('gamerChatAvatar').style.background = `linear-gradient(135deg, ${gamer.color}, #0a0f1f)`;
+    // Initialize demo users if empty
+    if(users.length === 0) {
+        users = [
+            { id: 1, username: "GHOST_RVJ", password: "123", friends: [2,3], friendRequests: [], avatar: "GH" },
+            { id: 2, username: "NEO_N1GHT", password: "123", friends: [1], friendRequests: [3], avatar: "NN" },
+            { id: 3, username: "RAVEN_VORTEX", password: "123", friends: [1], friendRequests: [], avatar: "RV" }
+        ];
+        saveUsers();
+    }
+
+    function getNextId() {
+        return users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    }
+
+    function register(username, password) {
+        if(users.find(u => u.username === username)) {
+            alert("❌ GAMER TAG ALREADY EXISTS!");
+            return false;
         }
-        currentGamerMessages = gamerMessagesDB[gamerId] ? [...gamerMessagesDB[gamerId]] : [];
-        renderGamerMessages();
-        renderGamerContacts();
+        const newUser = {
+            id: getNextId(),
+            username: username,
+            password: password,
+            friends: [],
+            friendRequests: [],
+            avatar: username.substring(0,2).toUpperCase(),
+            messages: {} // { friendId: [{text, fromId, timestamp, isRead}] }
+        };
+        users.push(newUser);
+        saveUsers();
+        alert("✅ ACCOUNT CREATED! NOW LOGIN.");
+        return true;
     }
 
-    function renderGamerMessages() {
-        const container = document.getElementById('gamerMessagesContainer');
-        container.innerHTML = '';
-        if (!currentGamerMessages.length) {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.style.textAlign = 'center';
-            emptyDiv.style.color = '#88aaff';
-            emptyDiv.style.padding = '30px';
-            emptyDiv.innerHTML = '💀 НЕТ СООБЩЕНИЙ... НАПИШИ ПЕРВЫМ 💀';
-            container.appendChild(emptyDiv);
+    function login() {
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        const user = users.find(u => u.username === username && u.password === password);
+        if(user) {
+            currentUser = user;
+            if(!currentUser.messages) currentUser.messages = {};
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('messengerApp').style.display = 'flex';
+            document.getElementById('currentUserDisplay').innerHTML = `🎮 ${currentUser.username}`;
+            renderFriendsList();
+            startRealTimeRefresh();
+            return;
+        }
+        alert("❌ WRONG TAG OR PASSWORD!");
+    }
+
+    function showRegister() {
+        const authForm = document.getElementById('authForm');
+        authForm.innerHTML = `
+            <input type="text" id="regUsername" class="auth-input" placeholder="NEW GAMER TAG">
+            <input type="password" id="regPassword" class="auth-input" placeholder="PASSWORD">
+            <button class="auth-btn" onclick="performRegister()">REGISTER</button>
+            <div class="switch-auth" onclick="showLogin()">← BACK TO LOGIN</div>
+        `;
+    }
+
+    function showLogin() {
+        const authForm = document.getElementById('authForm');
+        authForm.innerHTML = `
+            <input type="text" id="loginUsername" class="auth-input" placeholder="GAMER TAG">
+            <input type="password" id="loginPassword" class="auth-input" placeholder="PASSWORD">
+            <button class="auth-btn" onclick="login()">LOGIN</button>
+            <div class="switch-auth" onclick="showRegister()">NO ACCOUNT? REGISTER</div>
+        `;
+    }
+
+    function performRegister() {
+        const username = document.getElementById('regUsername').value;
+        const password = document.getElementById('regPassword').value;
+        if(register(username, password)) {
+            showLogin();
+        }
+    }
+
+    function sendFriendRequest() {
+        const targetTag = document.getElementById('addFriendInput').value;
+        if(!targetTag || targetTag === currentUser.username) {
+            alert("❌ CAN'T ADD YOURSELF!");
+            return;
+        }
+        const targetUser = users.find(u => u.username === targetTag);
+        if(!targetUser) {
+            alert("❌ PLAYER NOT FOUND!");
+            return;
+        }
+        if(currentUser.friends.includes(targetUser.id)) {
+            alert("⚠️ ALREADY FRIENDS!");
+            return;
+        }
+        if(targetUser.friendRequests && targetUser.friendRequests.includes(currentUser.id)) {
+            alert("⏳ REQUEST ALREADY SENT!");
+            return;
+        }
+        if(!targetUser.friendRequests) targetUser.friendRequests = [];
+        targetUser.friendRequests.push(currentUser.id);
+        saveUsers();
+        alert(`📨 REQUEST SENT TO ${targetTag}!`);
+        document.getElementById('addFriendInput').value = '';
+        renderFriendsList();
+    }
+
+    function acceptFriendRequest(friendId) {
+        const requestUser = users.find(u => u.id === friendId);
+        if(!requestUser) return;
+        if(!currentUser.friends.includes(friendId)) {
+            currentUser.friends.push(friendId);
+        }
+        if(!requestUser.friends.includes(currentUser.id)) {
+            requestUser.friends.push(currentUser.id);
+        }
+        currentUser.friendRequests = currentUser.friendRequests.filter(id => id !== friendId);
+        saveUsers();
+        renderFriendsList();
+        alert(`✅ ${requestUser.username} ADDED TO CLAN!`);
+    }
+
+    function declineFriendRequest(friendId) {
+        currentUser.friendRequests = currentUser.friendRequests.filter(id => id !== friendId);
+        saveUsers();
+        renderFriendsList();
+    }
+
+    function renderFriendsList() {
+        const container = document.getElementById('contactsList');
+        const searchTerm = document.getElementById('searchUsers').value.toLowerCase();
+        
+        // Show pending requests
+        let html = '';
+        if(currentUser.friendRequests && currentUser.friendRequests.length > 0) {
+            html += `<div style="padding:10px 20px;color:#ffaa44;font-size:12px;">⚔️ PENDING REQUESTS ⚔️</div>`;
+            currentUser.friendRequests.forEach(reqId => {
+                const reqUser = users.find(u => u.id === reqId);
+                if(reqUser) {
+                    html += `
+                        <div class="gamer-contact" style="background:#ff00ff11;">
+                            <div class="gamer-avatar" style="background:#ff44ff;">${reqUser.avatar}</div>
+                            <div class="gamer-info">
+                                <div class="gamer-name">${reqUser.username}</div>
+                                <div class="gamer-status">🎮 WANTS TO ADD YOU</div>
+                            </div>
+                            <div>
+                                <button class="add-friend-btn" onclick="acceptFriendRequest(${reqUser.id})">✔️ ACCEPT</button>
+                                <button class="add-friend-btn" style="background:#ff000033;" onclick="declineFriendRequest(${reqUser.id})">❌</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        }
+        
+        const friends = currentUser.friends.map(fid => users.find(u => u.id === fid)).filter(f => f && f.username.toLowerCase().includes(searchTerm));
+        if(friends.length > 0) {
+            html += `<div style="padding:10px 20px;color:#0ff;font-size:12px;">🎧 CLAN MEMBERS ONLINE 🎧</div>`;
+            friends.forEach(friend => {
+                const isActive = (currentChatUserId === friend.id);
+                html += `
+                    <div class="gamer-contact ${isActive ? 'active' : ''}" onclick="openChat(${friend.id})">
+                        <div class="gamer-avatar" style="background: linear-gradient(135deg, #0ff, #f0f);">${friend.avatar}</div>
+                        <div class="gamer-info">
+                            <div class="gamer-name">${friend.username}</div>
+                            <div class="gamer-status">🏆 RANK • ONLINE</div>
+                        </div>
+                    </div>
+                `;
+            });
         } else {
-            currentGamerMessages.forEach(msg => {
+            html += `<div style="padding:20px;color:#88aaff;text-align:center;">💀 NO FRIENDS YET. ADD SOME! 💀</div>`;
+        }
+        container.innerHTML = html;
+    }
+
+    function openChat(friendId) {
+        currentChatUserId = friendId;
+        const friend = users.find(u => u.id === friendId);
+        if(friend) {
+            document.getElementById('chatUserName').innerHTML = `${friend.username} 💬`;
+        }
+        renderMessages();
+    }
+
+    function getMessagesWithUser(userId) {
+        if(!currentUser.messages[userId]) currentUser.messages[userId] = [];
+        return currentUser.messages[userId];
+    }
+
+    function renderMessages() {
+        const container = document.getElementById('messagesContainer');
+        if(!currentChatUserId) {
+            container.innerHTML = '<div style="text-align:center;color:#88aaff;padding:40px;">⚔️ SELECT A CLAN MEMBER ⚔️</div>';
+            return;
+        }
+        const messages = getMessagesWithUser(currentChatUserId);
+        container.innerHTML = '';
+        if(messages.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:#88aaff;padding:40px;">💬 NO MESSAGES YET. START THE RAID!</div>';
+        } else {
+            messages.forEach(msg => {
                 const msgDiv = document.createElement('div');
-                msgDiv.classList.add('message-gamer', msg.type);
+                msgDiv.classList.add('message-gamer', msg.fromId === currentUser.id ? 'sent' : 'received');
                 msgDiv.innerHTML = `
-                    <div class="bubble-gamer">${escapeHtmlGamer(msg.text)}</div>
-                    <div class="message-time-gamer">⚡ ${msg.time}</div>
+                    <div class="bubble-gamer">${escapeHtml(msg.text)}</div>
+                    <div class="message-time-gamer" style="font-size:9px;">⚡ ${msg.timestamp || 'now'}</div>
                 `;
                 container.appendChild(msgDiv);
             });
         }
         container.scrollTop = container.scrollHeight;
+        
+        // Mark messages as read (in other user's perspective, but we just refresh)
+        saveUsers();
     }
 
-    function escapeHtmlGamer(str) {
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        if(!text || !currentChatUserId) {
+            alert("SELECT A FRIEND FIRST!");
+            return;
+        }
+        const now = new Date();
+        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+        
+        // Add to current user's messages
+        if(!currentUser.messages[currentChatUserId]) currentUser.messages[currentChatUserId] = [];
+        currentUser.messages[currentChatUserId].push({
+            text: text,
+            fromId: currentUser.id,
+            timestamp: timeStr,
+            isRead: false
+        });
+        
+        // Add to friend's messages
+        const friend = users.find(u => u.id === currentChatUserId);
+        if(friend) {
+            if(!friend.messages) friend.messages = {};
+            if(!friend.messages[currentUser.id]) friend.messages[currentUser.id] = [];
+            friend.messages[currentUser.id].push({
+                text: text,
+                fromId: currentUser.id,
+                timestamp: timeStr,
+                isRead: false
+            });
+            saveUsers();
+        }
+        
+        input.value = '';
+        renderMessages();
+        renderFriendsList(); // update last message preview if needed
+    }
+
+    function escapeHtml(str) {
         return str.replace(/[&<>]/g, function(m) {
             if(m === '&') return '&amp;';
             if(m === '<') return '&lt;';
@@ -541,69 +695,48 @@
         });
     }
 
-    function sendGamerMessage() {
-        const input = document.getElementById('gamerMessageInput');
-        const text = input.value.trim();
-        if (text === '') return;
-        const now = new Date();
-        const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
-        const newMsg = {
-            text: text,
-            type: 'sent',
-            time: timeStr
-        };
-        currentGamerMessages.push(newMsg);
-        gamerMessagesDB[currentGamerId] = [...currentGamerMessages];
-        const gamer = gamers.find(g => g.id === currentGamerId);
-        if (gamer) {
-            gamer.lastMsg = text.length > 35 ? text.slice(0,35)+'...' : text;
-            gamer.time = timeStr;
-        }
-        input.value = '';
-        renderGamerMessages();
-        renderGamerContacts();
-
-        // Геймерский автоОТВЕТ (с рандомными репликами)
-        clearTimeout(window.gamerReplyTimer);
-        window.gamerReplyTimer = setTimeout(() => {
-            if (currentGamerId === gamer?.id) {
-                const gamerReplies = [
-                    "🔥 КАЛИБР 50! ХЭДШОТ!", "🎮 GG WP, братан!", "⚔️ ВЗЯЛ ЛОБАЧА", 
-                    "💀 ТЫ РАЗРУШИТЕЛЬ", "🏆 РАШИМ А, ГОУ", "🤘 RVJ В КРОВИ",
-                    "🔫 ДОМИНАТОР", "💥 АГРЕССИВНЫЙ ПЛЕЙ"
-                ];
-                const randomReply = gamerReplies[Math.floor(Math.random() * gamerReplies.length)];
-                const replyTime = new Date();
-                const replyTimeStr = `${replyTime.getHours().toString().padStart(2,'0')}:${replyTime.getMinutes().toString().padStart(2,'0')}`;
-                const receivedMsg = {
-                    text: randomReply,
-                    type: 'received',
-                    time: replyTimeStr
-                };
-                currentGamerMessages.push(receivedMsg);
-                gamerMessagesDB[currentGamerId] = [...currentGamerMessages];
-                const contact = gamers.find(c => c.id === currentGamerId);
-                if(contact) {
-                    contact.lastMsg = randomReply;
-                    contact.time = replyTimeStr;
+    function startRealTimeRefresh() {
+        if(refreshInterval) clearInterval(refreshInterval);
+        refreshInterval = setInterval(() => {
+            // Reload users from localStorage (sync between tabs/windows)
+            const updatedUsers = JSON.parse(localStorage.getItem('rvj_users'));
+            if(updatedUsers) {
+                const stillExists = updatedUsers.find(u => u.id === currentUser.id);
+                if(stillExists) {
+                    currentUser = stillExists;
+                    if(!currentUser.messages) currentUser.messages = {};
+                    if(currentChatUserId) {
+                        const chatFriendExists = currentUser.friends.includes(currentChatUserId);
+                        if(!chatFriendExists && currentChatUserId) {
+                            currentChatUserId = null;
+                            document.getElementById('chatUserName').innerHTML = "SELECT CHAT";
+                            renderMessages();
+                        }
+                    }
+                    renderFriendsList();
+                    if(currentChatUserId) renderMessages();
+                } else {
+                    logout(); // user deleted somehow
                 }
-                renderGamerMessages();
-                renderGamerContacts();
             }
-        }, 1800);
+        }, 1500);
     }
 
-    // обработчики
-    document.getElementById('gamerSendBtn').addEventListener('click', sendGamerMessage);
-    document.getElementById('gamerMessageInput').addEventListener('keypress', (e) => {
-        if(e.key === 'Enter') sendGamerMessage();
-    });
-    document.getElementById('gamerSearch').addEventListener('input', () => renderGamerContacts());
+    function logout() {
+        if(refreshInterval) clearInterval(refreshInterval);
+        currentUser = null;
+        currentChatUserId = null;
+        document.getElementById('authOverlay').style.display = 'flex';
+        document.getElementById('messengerApp').style.display = 'none';
+        showLogin();
+    }
 
-    // init
-    renderGamerContacts();
-    switchGamerChat(1);
-    document.getElementById('gamerMessageInput').focus();
+    // Event listeners
+    document.getElementById('sendBtn').addEventListener('click', sendMessage);
+    document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') sendMessage();
+    });
+    document.getElementById('searchUsers').addEventListener('input', () => renderFriendsList());
 </script>
 </body>
 </html>
